@@ -32,29 +32,4 @@ export class TasksService {
     this.tasks.push(task);
     return task;
   }
-
-  deleteTaskById(id: string): void {
-    const index = this.tasks.findIndex((task) => task.id === id);
-
-    if (index === -1) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
-    }
-
-    this.tasks.splice(index, 1);
-  }
-
-  updateTaskById(
-    id: string,
-    title?: string,
-    description?: string,
-    status?: TaskStatus,
-  ): Task {
-    const task = this.getTaskById(id);
-
-    if (title) task.title = title;
-    if (description) task.description = description;
-    if (status) task.status = status;
-
-    return task;
-  }
 }
