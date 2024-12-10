@@ -22,4 +22,9 @@ export class TasksController {
   createTask(@Body() createTaksDto: CreateTaksDto): Task {
     return this.tasksService.createTask(createTaksDto);
   }
+
+  @Delete('/:id')
+  deleteTask(@Param() id:string): void {
+    return this.tasksService.deleteTask(id);
+  }
 }
