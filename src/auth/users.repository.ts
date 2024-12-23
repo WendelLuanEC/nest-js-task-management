@@ -1,13 +1,15 @@
 import { DataSource, Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { AuthCredencialsDto } from './dto/auth-credencials.dto';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
-  // Precisamos injetar o DataSource e chamar o super
   constructor(private dataSource: DataSource) {
-    // O super recebe (entidade, entityManager)
     super(User, dataSource.createEntityManager());
   }
 
@@ -15,6 +17,15 @@ export class UsersRepository extends Repository<User> {
     const { username, password } = authCredentialsDto;
 
     const user = this.create({ username, password });
-    await this.save(user);
+
+    try {
+      await this.save(user);
+    } catch (error) {
+      if ((error.code = '23505')) {
+        throw new ConflictException('Username already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 }
