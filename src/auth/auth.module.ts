@@ -5,15 +5,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { DataSource } from 'typeorm';
 import { UsersRepository } from './users.repository';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    // Registrar a entidade
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: 'topSecret51',
+      signOptions: {
+        expiresIn: 3600,
+      },
+    }),
     TypeOrmModule.forFeature([User]),
   ],
   providers: [
     AuthService,
-    // Criar um provider manualmente p/ UsersRepository
     {
       provide: UsersRepository,
       useFactory: (dataSource: DataSource) => {
